@@ -1,0 +1,44 @@
+clear all %efface les variables
+close all %efface les graphs
+
+data = xlsread('315_2h_4');
+
+Dep = data(:,2);
+Force = data(:,1);
+
+
+
+S0 = 0.16; %mm2 calculer manuellement
+
+plot(Dep,Force)
+hold on
+ylabel('Force [kN]')
+grid on
+xlabel('Allongement [mm]')
+title('Essai de traction - etat de livraison du CuBe')
+
+
+Fm = max(Force) %kN
+
+Rm = Fm/S0
+
+plot([0 max(Dep)],[Fm Fm]) %plot your line plot([x1 x2],[y1 y2])
+text(max(Dep)/2 , 1.015*Fm, 'Fm', 'Color', 'r') %text(x,y, 'texte', change couleur, 'code couleur')
+
+for i = 1:length(Dep)-1 % calcul des pentes pour la courbe
+    pente(i) = (Force(i+1)-Force(i))/(Dep(i+1)-Dep(i));
+end
+
+vect = find(pente<=2.3); %find at which rank are all values of pente <=0 The first value is the rank for Fe
+
+x_Re = Dep(vect(1)); %Find the Dep associated to Fe
+y_Re = Force(vect(1)); %Find the value of Fe
+Fe = y_Re
+
+line([0 x_Re],[Fe Fe], 'Color','r')  %plot the line for Fe
+text(max(x_Re)/4 , 1.015*Fe, 'Fe', 'Color', 'r') % text for Fe
+
+
+
+
+plot(x_Re,y_Re,'*') %Plot a star to vizualise the chosen point for Re (useful for cross verification by sight)
